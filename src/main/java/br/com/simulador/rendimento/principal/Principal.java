@@ -5,45 +5,44 @@ import br.com.simulador.rendimento.service.Calculadora;
 import br.com.simulador.rendimento.service.MensagemInicialService;
 import br.com.simulador.rendimento.service.RendimentoResultService;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Principal {
-    RendimentoResultService resultService;
-    MensagemInicialService mensagemInicialService;
-    Scanner scanner;
+    private final Scanner scanner;
+    private final MensagemInicialService mensagemInicialService;
+    private final RendimentoResultService resultService;
+    private final Calculadora calculadora;
 
-    public Principal(RendimentoResultService resultService, MensagemInicialService mensagemInicialService, Scanner scanner) {
-        this.resultService = resultService;
-        this.mensagemInicialService = mensagemInicialService;
+    public Principal(Scanner scanner, MensagemInicialService mensagemInicialService, Calculadora calculadora, RendimentoResultService resultService) {
         this.scanner = scanner;
+        this.mensagemInicialService = mensagemInicialService;
+        this.calculadora = calculadora;
+        this.resultService = resultService;
     }
 
     public void iniciarPrograma() {
         mensagemInicialService.exibirMensagemInicial();
 
-        System.out.print("Digite o saldo inicial: ");
-        double saldoInicial = scanner.nextDouble();
+        double saldoInicial = lerDouble("Digite o saldo inicial: ");
+        double valorInvestimentoMensal = lerDouble("Digite o valor do investimento mensal: ");
+        int meses = lerInt("Digite quantos meses você deseja ver o rendimento: ");
 
-        System.out.print("Digite o valor do investimento mensal: ");
-        double valorInvestimentoMensal = scanner.nextDouble();
-
-        System.out.print("Digite quantos meses você deseja ver o rendimento: ");
-        int meses = scanner.nextInt();
-
-
-        Calculadora calculadora = new Calculadora();
         DadosCalculo resultadosCalculos = calculadora.calcularResultados(saldoInicial, meses, valorInvestimentoMensal);
 
-
-        double saldoAcumulado = resultadosCalculos.saldoAcumulado();
-        List<Double> rendimentosMensais = resultadosCalculos.rendimentosMensais();
-        List<Double> saldosMensais = resultadosCalculos.saldosMensais();
-
-        resultService.exibirResultadosGerais(saldoInicial, saldoAcumulado, rendimentosMensais);
-        resultService.exibirEstatiscasMensais(meses, saldosMensais, rendimentosMensais);
+        resultService.exibirResultadosGerais(saldoInicial, resultadosCalculos.saldoAcumulado(), resultadosCalculos.rendimentosMensais());
+        resultService.exibirEstatiscasMensais(meses, resultadosCalculos.saldosMensais(), resultadosCalculos.rendimentosMensais());
 
         scanner.close();
+    }
+
+    public double lerDouble(String mensagem) {
+        System.out.println(mensagem);
+        return scanner.nextDouble();
+    }
+
+    public int lerInt(String mensagem) {
+        System.out.println(mensagem);
+        return scanner.nextInt();
     }
 
 }

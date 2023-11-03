@@ -1,6 +1,7 @@
 package br.com.simulador.rendimento;
 
 import br.com.simulador.rendimento.principal.Principal;
+import br.com.simulador.rendimento.service.Calculadora;
 import br.com.simulador.rendimento.service.MensagemInicialService;
 import br.com.simulador.rendimento.service.RendimentoResultService;
 import org.springframework.boot.CommandLineRunner;
@@ -19,11 +20,13 @@ public class RendimentoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		RendimentoResultService rendimentoResultService = new RendimentoResultService();
-		MensagemInicialService mensagemInicialService = new MensagemInicialService();
-		Scanner scanner = new Scanner(System.in);
 
-		Principal principal = new Principal(rendimentoResultService, mensagemInicialService, scanner);
+		Scanner scanner = new Scanner(System.in);
+		MensagemInicialService mensagemInicialService = new MensagemInicialService();
+		RendimentoResultService rendimentoResultService = new RendimentoResultService();
+		Calculadora calculadora = new Calculadora();
+
+		Principal principal = new Principal(scanner, mensagemInicialService, calculadora, rendimentoResultService);
 		principal.iniciarPrograma();
 	}
 }
